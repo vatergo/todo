@@ -34,7 +34,7 @@ export default Vue.extend({
   }),
   methods: {
     addTask() {
-      this.$store.commit("ADD_TASK", this.taskName);
+      this.$store.dispatch("addTask", this.taskName);
       this.taskName = "";
     },
   },

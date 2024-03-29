@@ -17,7 +17,11 @@
     </div>
     <form v-else @submit.prevent="saveTask">
       <a-input v-bind:default-value="innerLabel" @change="changeLabel" />
-      <a-select v-bind:default-value="innerStatus" @change="changeStatus">
+      <a-select
+        class="select"
+        v-bind:default-value="innerStatus"
+        @change="changeStatus"
+      >
         <a-select-option value="done">Done</a-select-option>
         <a-select-option value="cancel">Cancel</a-select-option>
         <a-select-option value="new">New</a-select-option>
@@ -68,11 +72,11 @@ export default Vue.extend({
       this.editMode = true;
     },
     deleteTask() {
-      this.$store.commit("DELETE_TASK", this.task.id);
+      this.$store.dispatch("deleteTask", this.task.id);
     },
     saveTask() {
       this.editMode = false;
-      this.$store.commit("EDIT_TASK", {
+      this.$store.dispatch("editTask", {
         ...this.task,
         label: this.innerLabel,
         status: this.innerStatus,
@@ -99,5 +103,8 @@ export default Vue.extend({
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+.select {
+  max-width: 90px;
 }
 </style>
