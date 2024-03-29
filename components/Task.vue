@@ -1,19 +1,29 @@
 <template>
   <div class="content">
     <div v-if="!editMode">
-      <span>{{ task.label }}</span>
-      <span>{{ task.status }}</span>
-      <button @click="enableEditMode">edit</button>
+      <span
+        ><a-icon
+          v-if="task.status === 'new'"
+          type="clock-circle"
+          style="color: blue" />
+        <a-icon
+          v-else-if="task.status === 'done'"
+          type="check-circle"
+          style="color: green" />
+        <a-icon v-else type="close-circle" style="color: red"
+      /></span>
+      <span class="label">{{ task.label }}</span>
+      <a-button @click="enableEditMode" icon="edit" />
     </div>
     <form v-else @submit.prevent="saveTask">
-      <input v-model="innerLabel" />
-      <select v-model="innerStatus">
-        <option value="done">Done</option>
-        <option value="cancel">Cancel</option>
-        <option value="new">New</option>
-      </select>
-      <button type="submit">save</button>
-      <button @click="deleteTask">delete</button>
+      <a-input v-bind:default-value="innerLabel" @change="changeLabel" />
+      <a-select v-bind:default-value="innerStatus" @change="changeStatus">
+        <a-select-option value="done">Done</a-select-option>
+        <a-select-option value="cancel">Cancel</a-select-option>
+        <a-select-option value="new">New</a-select-option>
+      </a-select>
+      <a-button @click="deleteTask" icon="delete" />
+      <a-button htmlType="submit" icon="save" />
     </form>
   </div>
 </template>
@@ -45,8 +55,15 @@ export default Vue.extend({
       innerStatus: props.task.status,
     };
   },
-
   methods: {
+    changeStatus(newStatus: Task["status"]) {
+      this.innerStatus = newStatus;
+    },
+    changeLabel({ target }: InputEvent) {
+      if (target instanceof HTMLInputElement) {
+        this.innerLabel = target.value;
+      }
+    },
     enableEditMode() {
       this.editMode = true;
     },
@@ -64,3 +81,23 @@ export default Vue.extend({
   },
 });
 </script>
+
+<style>
+.content > div,
+.content > form {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+.content > div button,
+.content > form button {
+  flex-shrink: 0;
+}
+.label {
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+</style>
